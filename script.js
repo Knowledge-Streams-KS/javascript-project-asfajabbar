@@ -3,21 +3,39 @@ const getMovie=document.getElementById('mname');
 const submitButton=document.getElementById('btn');
 submitButton.addEventListener("click", ()=>getData(getMovie));
 
+window.onload = function () {
+    let localData = localStorage.getItem("localData");
+    if (localData) {
+      let movieDetail = document.getElementById("movielist");
+      movieDetail.innerHTML = localData;
+    }
+    sessionStorage.clear();
+  };
+  // Onbeforeunload function to unload
+  window.onbeforeunload = function () {
+    let movieDetail = document.getElementById("movielist").innerHTML;
+    localStorage.setItem("localData", movieDetail);
+  };
  
 const getData = async(getMovie) =>{
-   
- 
+
+    let movieDetail = document.getElementById("movielist");
+    // console.log(movieDetail);
+    movieDetail.innerHTML = "";
     const getYear=document.getElementById('year').value;
      console.log("YEAR: "+ getYear);
-    //alert(getMovie.value);
     const resp=await fetch(`http://www.omdbapi.com/?s=${getMovie.value}&apikey=591877c0`);
     const data = await resp.json();
     console.log(data);
-    //const new_arr = data.Search;
-    //console.log(new_arr);
-    //new_arr.map(showlist);
     const year_m= data['Search'];
-    //year_m.map(showlist);
+    if(getYear=="")
+    {
+         year_m.map(showlist);
+         console.log("hello");
+    }
+    else
+    {
+
      const y_data = year_m.filter((y)=>
      {
         if(y['Year']=== getYear)
@@ -26,9 +44,10 @@ const getData = async(getMovie) =>{
          }
      })
      console.log(y_data);
-    //  const new_arr=y_data;
-    // new_arr.map(y_data);
      y_data.map(showlist)
+    
+    
+    }
 }
 function showlist(data)
 {
